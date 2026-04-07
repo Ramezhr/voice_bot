@@ -1,7 +1,7 @@
-import openai
+from openai import OpenAI
 from app.config import OPENAI_API_KEY
 
-client = openai.OpenAI(api_key=OPENAI_API_KEY)
+client = OpenAI(api_key=OPENAI_API_KEY)
 
 def transcribe(audio_bytes: bytes, filename="voice.webm") -> str:
     response = client.audio.transcriptions.create(

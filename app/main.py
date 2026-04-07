@@ -4,7 +4,11 @@ from fastapi import FastAPI, UploadFile, Header, HTTPException
 from fastapi.responses import StreamingResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from app.pipeline import run_pipeline
+from fastapi.responses import FileResponse
 
+@app.get("/")
+async def root():
+    return FileResponse("index.html")
 app = FastAPI(title="Egyptian Arabic Voice Bot")
 
 app.add_middleware(

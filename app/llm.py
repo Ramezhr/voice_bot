@@ -1,7 +1,7 @@
-import openai
+from openai import OpenAI
 from app.config import OPENAI_API_KEY
 
-client = openai.OpenAI(api_key=OPENAI_API_KEY)
+client = OpenAI(api_key=OPENAI_API_KEY)
 
 SYSTEM_PROMPT = """
 أنت مساعد ذكي بتتكلم باللهجة المصرية العامية فقط.
