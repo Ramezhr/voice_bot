@@ -5,10 +5,12 @@ from fastapi.responses import StreamingResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from app.pipeline import run_pipeline
 from fastapi.responses import FileResponse
+import os
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 @app.get("/")
 async def root():
-    return FileResponse("index.html")
+    return FileResponse(os.path.join(BASE_DIR, "index.html"))
 app = FastAPI(title="Egyptian Arabic Voice Bot")
 
 app.add_middleware(
