@@ -4,7 +4,11 @@ from fastapi import FastAPI, UploadFile, Header, HTTPException
 from fastapi.responses import StreamingResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from app.pipeline import run_pipeline
+from fastapi.staticfiles import StaticFiles
+import os
 
+# Serve static folder at root
+app.mount("/", StaticFiles(directory="static", html=True), name="static")
 app = FastAPI(title="Egyptian Arabic Voice Bot")
 
 app.add_middleware(
