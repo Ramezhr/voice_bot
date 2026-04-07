@@ -1,16 +1,11 @@
 import io
+import os
 import base64
 from fastapi import FastAPI, UploadFile, Header, HTTPException
-from fastapi.responses import StreamingResponse, JSONResponse
+from fastapi.responses import StreamingResponse, JSONResponse, FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from app.pipeline import run_pipeline
-from fastapi.responses import FileResponse
-import os
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-@app.get("/")
-async def root():
-    return FileResponse(os.path.join(BASE_DIR, "index.html"))
 app = FastAPI(title="Egyptian Arabic Voice Bot")
 
 app.add_middleware(
@@ -21,11 +16,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Path صحيح للـ index.html (خارج app/)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+INDEX_FILE = os.path.join(BASE_DIR, "index.html")
+
+@app.get("/")
+async def root():
+    return FileResponse(INDEX_FILE)
 
 @app.get("/health")
 async def health():
     return {"status": "ok"}
-
 
 @app.post("/voice/chat")
 async def voice_chat(
@@ -45,7 +46,6 @@ async def voice_chat(
     audio_bytes = await audio.read()
     reply_audio, transcript = await run_pipeline(audio_bytes, x_session_id)
 
-    # Encode transcript as base64 so Arabic text is safe in headers
     transcript_b64 = base64.b64encode(transcript.encode("utf-8")).decode("ascii")
 
     return StreamingResponse(
@@ -57,7 +57,6 @@ async def voice_chat(
             "Access-Control-Expose-Headers": "X-Transcript-B64, X-Session-Id",
         },
     )
-
 
 @app.delete("/voice/session/{session_id}")
 async def clear_session(session_id: str):
